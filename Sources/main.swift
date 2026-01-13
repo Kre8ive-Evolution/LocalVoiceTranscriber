@@ -576,30 +576,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, AudioTranscriptionManagerDel
             return
         }
 
-        // Show initial indicator
-        if let button = statusItem.button {
-            button.image = nil
-            button.title = "⚙️ Processing..."
-        }
-
-        // Animate the indicator
-        var dotCount = 0
-        transcriptionTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
-            guard let self = self else {
-                self?.transcriptionTimer?.invalidate()
-                return
-            }
-
-            // Don't update if screen recording is active
-            if self.screenRecorder.recording {
-                return
-            }
-
+        // Show gear icon (no text animation - just icon change)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
             if let button = self.statusItem.button {
-                dotCount = (dotCount + 1) % 4
-                let dots = String(repeating: ".", count: dotCount)
-                let spaces = String(repeating: " ", count: 3 - dotCount)
-                button.title = "⚙️ Processing" + dots + spaces
+                button.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Processing")
+                button.title = ""
             }
         }
     }
