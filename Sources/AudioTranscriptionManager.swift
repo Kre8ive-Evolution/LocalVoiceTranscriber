@@ -249,20 +249,11 @@ class AudioTranscriptionManager {
             return
         }
         
-        // Calculate RMS (Root Mean Square) to detect silence
+        // Silence detection disabled - let WhisperKit decide if there's speech
+        // This allows transcription even during calls when mic is shared
         let rms = sqrt(audioBuffer.reduce(0) { $0 + $1 * $1 } / Float(audioBuffer.count))
         let db = 20 * log10(max(rms, 0.00001))
-        
-        // Threshold for silence detection
-        // Lowered to -75dB to capture quieter audio from MacBook mic
-        let silenceThreshold: Float = -75.0
-        
-        if db < silenceThreshold {
-            print("Audio too quiet (RMS: \(rms), dB: \(db)). Skipping transcription.")
-            // Reset the status bar icon when skipping quiet audio
-            delegate?.recordingWasSkippedDueToSilence()
-            return
-        }
+        print("Audio level: RMS=\(rms), dB=\(db)")
         
         // Start transcription
         delegate?.transcriptionDidStart()
