@@ -1,0 +1,17 @@
+{
+  "textReplacements" : {
+    "CloakCode" : "Claude Code",
+    "cloakcode" : "claude code",
+    "Cloak Code" : "Claude Code",
+    "cloak code" : "claude code",
+    "CloudCode" : "Claude Code",
+    "cloudcode" : "claudecode",
+    "Cloud Code" : "Claude Code",
+    "cloud code" : "claude code",
+    "cloud.md" : "CLAUDE.md",
+    "claw.md" : "CLAUDE.md",
+    "clod.md" : "CLAUDE.md",
+    "let's make a comment." : "let's make a commit.",
+    "Let's make a comment." : "Let's make a commit."
+  }
+}
