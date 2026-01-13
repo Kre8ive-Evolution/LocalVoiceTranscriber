@@ -253,9 +253,9 @@ class AudioTranscriptionManager {
         let rms = sqrt(audioBuffer.reduce(0) { $0 + $1 * $1 } / Float(audioBuffer.count))
         let db = 20 * log10(max(rms, 0.00001))
         
-        // Threshold for silence detection (stricter to avoid false positives)
-        // Lowered to -55dB to capture quieter audio
-        let silenceThreshold: Float = -55.0
+        // Threshold for silence detection
+        // Lowered to -75dB to capture quieter audio from MacBook mic
+        let silenceThreshold: Float = -75.0
         
         if db < silenceThreshold {
             print("Audio too quiet (RMS: \(rms), dB: \(db)). Skipping transcription.")
