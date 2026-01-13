@@ -608,15 +608,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, AudioTranscriptionManagerDel
         transcriptionTimer?.invalidate()
         transcriptionTimer = nil
 
-        // Don't update status bar if screen recording is active
-        if screenRecorder.recording {
-            return
-        }
+        // Always reset status bar on main thread
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
 
-        // If not currently recording, reset to default icon.
-        // When recording, the live level updates will take over UI shortly.
-        if audioManager?.isRecording != true {
-            if let button = statusItem.button {
+            // Skip UI update only if screen recording is currently active
+            if self.screenRecorder.recording {
+                return
+            }
+
+            // Reset status bar icon and title unconditionally
+            if let button = self.statusItem.button {
                 button.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Voice Assistant")
                 button.title = ""
             }
@@ -724,9 +726,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, AudioTranscriptionManagerDel
     
     func audioLevelDidUpdate(db: Float) {
         updateStatusBarWithLevel(db: db)
-        // Update and show waveform overlay
+        // Update waveform overlay
         WaveformOverlay.shared.updateAudioLevel(db)
-        WaveformOverlay.shared.show()
+        // Only show once (not on every audio update)
+        if !WaveformOverlay.shared.isCurrentlyShowing {
+            WaveformOverlay.shared.show()
+        }
     }
     
     func transcriptionDidStart() {

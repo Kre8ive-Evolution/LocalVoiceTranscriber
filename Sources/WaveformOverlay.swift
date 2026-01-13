@@ -20,28 +20,31 @@ class WaveformOverlay {
         }
     }
 
-    /// Show the overlay at bottom center
+    /// Show the overlay at bottom center (thread-safe)
     func show() {
-        guard !isShowing else { return }
-        isShowing = true
-
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
+            guard !self.isShowing else { return }  // Check on main thread
+            self.isShowing = true
             self.window?.orderFront(nil)
             self.startAnimation()
         }
     }
 
-    /// Hide the overlay
+    /// Hide the overlay (thread-safe)
     func hide() {
-        guard isShowing else { return }
-        isShowing = false
-
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
+            guard self.isShowing else { return }  // Check on main thread
+            self.isShowing = false
             self.stopAnimation()
             self.window?.orderOut(nil)
         }
+    }
+
+    /// Check if overlay is currently visible
+    var isCurrentlyShowing: Bool {
+        return isShowing
     }
 
     /// Update with audio level (dB value, typically -60 to 0)
